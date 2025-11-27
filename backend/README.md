@@ -1,169 +1,97 @@
-# SafeArms Backend
+# SafeArms Backend - Phase 2 Complete ✅
 
-Backend API for the SafeArms Firearm Management and Forensic Support System.
+## New API Endpoints
 
-## Technology Stack
+### Firearms (`/api/firearms`)
+- `POST /register/hq` - Register firearm at HQ with ballistic profile (HQ Commander)
+- `POST /register/station` - Assign firearm to station (Station Commander)
+- `GET /` - List firearms (role-based filtering)
+- `GET /:id` - Get firearm details
+- `PUT /:id` - Update firearm
+- `GET /:id/history` - Get custody and lifecycle history
+- `POST /:firearmId/ballistics` - Add/update ballistic profile (HQ Commander)
+- `GET /:firearmId/ballistics` - Get ballistic profile (HQ Commander, Forensic Analyst)
+- `GET /search/ballistics` - Search by ballistic characteristics (Forensic Analyst)
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: PostgreSQL
-- **Authentication**: JWT + TOTP 2FA (Speakeasy)
-- **Security**: Bcrypt, Helmet, CORS
+### Officers (`/api/officers`)
+- `GET /` - List officers (role-based filtering)
+- `GET /:id` - Get officer details
+- `POST /` - Create officer (Station Commander, HQ Commander)
+- `PUT /:id` - Update officer
+- `GET /:id/firearms` - Get officer firearm history
 
-## Prerequisites
+### Custody (`/api/custody`)
+- `POST /assign` - Assign firearm to officer (Station Commander, HQ Commander)
+- `POST /:assignmentId/return` - Return firearm
+- `POST /:assignmentId/transfer` - Transfer custody between officers
+- `GET /` - List custody assignments
+- `GET /timeline/:firearmId` - Get custody timeline (Forensic Analyst, HQ Commander, Auditor)
 
-- Node.js 16+ and npm
-- PostgreSQL 12+
+### Lifecycle (`/api/lifecycle`)
+- `POST /loss` - Report firearm loss (Station Commander)
+- `POST /destruction` - Request firearm destruction (Station Commander)
+- `POST /procurement` - Request firearm procurement (Station Commander)
+- `GET /` - List lifecycle events
+- `POST /:eventId/review` - Approve/reject event (HQ Commander)
 
-## Setup Instructions
-
-### 1. Install Dependencies
-
-```bash
-cd backend
-npm install
-```
-
-### 2. Configure Environment
-
-Copy the example environment file and update with your configuration:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set:
-- Database credentials
-- JWT secrets (use strong random strings)
-- Encryption keys
-- CORS origin (frontend URL)
-
-### 3. Database Setup
-
-Create the database and user:
-
-```sql
-CREATE DATABASE safearms_db;
-CREATE USER safearms_user WITH ENCRYPTED PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE safearms_db TO safearms_user;
-```
-
-Run the schema:
+## Test with cURL
 
 ```bash
-psql -U safearms_user -d safearms_db -f src/database/schema.sql
+# Login and get token
+TOKEN="your_jwt_token_here"
+
+# Register firearm at HQ
+curl -X POST http://localhost:3000/api/firearms/register/hq \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "serialNumber": "RNP-2024-001",
+    "manufacturer": "Glock",
+    "model": "19 Gen5",
+    "firearmType": "Pistol",
+    "caliber": "9mm",
+    "ballisticProfile": {
+      "riflingPattern": "Right twist polygonal",
+      "twistRate": "1:10",
+      "grooveCount": 0,
+      "analystName": "Dr. Niyonzima"
+    }
+  }'
+
+# Assign firearm to station
+curl -X POST http://localhost:3000/api/firearms/register/station \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"serialNumber": "RNP-2024-001"}'
+
+# Create officer
+curl -X POST http://localhost:3000/api/officers \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "badgeNumber": "RNP005001",
+    "fullName": "Corporal John Doe",
+    "rank": "Corporal",
+    "unitId": 2
+  }'
+
+# Assign custody
+curl -X POST http://localhost:3000/api/custody/assign \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firearmId": 1,
+    "officerId": 8,
+    "custodyType": "PERMANENT"
+  }'
 ```
 
-Load seed data (development only):
+## Database Tables Used
+- `firearms` - Firearm registry
+- `ballistic_profiles` - Forensic characteristics
+- `officers` - Police personnel
+- `custody_assignments` - Active and historical assignments
+- `custody_logs` - Immutable custody audit trail
+- `lifecycle_events` - Loss/destruction/procurement requests
 
-```bash
-psql -U safearms_user -d safearms_db -f src/database/seed.sql
-```
-
-### 4. Start the Server
-
-Development mode (with auto-reload):
-
-```bash
-npm run dev
-```
-
-Production mode:
-
-```bash
-npm start
-```
-
-The server will start on `http://localhost:3000` (or your configured PORT).
-
-## API Endpoints
-
-### Authentication
-
-- `POST /api/auth/login` - Initial login with username/password
-- `POST /api/auth/setup-2fa` - Generate 2FA QR code
-- `POST /api/auth/verify-2fa` - Verify TOTP code and get JWT
-- `POST /api/auth/refresh` - Refresh access token
-- `POST /api/auth/logout` - Logout (requires auth)
-
-### Users
-
-- `GET /api/users` - Get all users (Admin)
-- `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create user (Admin)
-- `PUT /api/users/:id` - Update user (Admin)
-- `POST /api/users/confirm-unit` - Confirm assigned unit (Station Commander)
-- `POST /api/users/change-password` - Change password
-
-### Units
-
-- `GET /api/units` - Get all units
-- `GET /api/units/:id` - Get unit by ID
-- `POST /api/units` - Create unit (Admin, HQ Commander)
-- `PUT /api/units/:id` - Update unit (Admin, HQ Commander)
-- `GET /api/units/:id/personnel` - Get unit personnel
-
-## Default Test Accounts
-
-**Username**: `admin` | **Password**: `Password123!` | **Role**: Admin  
-**Username**: `hq_commander` | **Password**: `Password123!` | **Role**: HQ Firearm Commander  
-**Username**: `station_kicukiro` | **Password**: `Password123!` | **Role**: Station Commander  
-**Username**: `forensic_analyst` | **Password**: `Password123!` | **Role**: Forensic Analyst  
-**Username**: `auditor` | **Password**: `Password123!` | **Role**: Auditor
-
-⚠️ **Change these passwords in production!**
-
-## Project Structure
-
-```
-backend/
-├── src/
-│   ├── config/
-│   │   └── database.js          # PostgreSQL connection pool
-│   ├── controllers/
-│   │   ├── authController.js     # Authentication logic
-│   │   ├── userController.js     # User management
-│   │   └── unitController.js     # Unit management
-│   ├── middleware/
-│   │   ├── auth.js              # JWT & RBAC middleware
-│   │   └── validator.js         # Input validation
-│   ├── routes/
-│   │   ├── auth.js              # Auth endpoints
-│   │   ├── users.js             # User endpoints
-│   │   └── units.js             # Unit endpoints
-│   ├── database/
-│   │   ├── schema.sql           # Database schema
-│   │   └── seed.sql             # Seed data
-│   └── server.js                # Express app entry point
-├── package.json
-├── .env.example
-└── .gitignore
-```
-
-## Security Features
-
-- **Password Hashing**: Bcrypt with salt rounds
-- **JWT Authentication**: Secure token-based auth
-- **2FA**: TOTP-based two-factor authentication
-- **RBAC**: Role-based access control
-- **Audit Logging**: All sensitive operations logged
-- **Input Validation**: Express-validator on all routes
-- **Security Headers**: Helmet middleware
-
-## Development
-
-Run tests:
-
-```bash
-npm test
-```
-
-Run with auto-reload:
-
-```bash
-npm run dev
-```
-
-## License
-
-MIT License - Rwanda National Police
+**Phase 2 backend complete!** Ready for frontend integration.
