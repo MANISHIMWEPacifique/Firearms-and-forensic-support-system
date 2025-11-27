@@ -9,6 +9,10 @@ const db = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const unitRoutes = require('./routes/units');
+const firearmRoutes = require('./routes/firearms');
+const officerRoutes = require('./routes/officers');
+const custodyRoutes = require('./routes/custody');
+const lifecycleRoutes = require('./routes/lifecycle');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +58,10 @@ const apiPrefix = process.env.API_PREFIX || '/api';
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/users`, userRoutes);
 app.use(`${apiPrefix}/units`, unitRoutes);
+app.use(`${apiPrefix}/firearms`, firearmRoutes);
+app.use(`${apiPrefix}/officers`, officerRoutes);
+app.use(`${apiPrefix}/custody`, custodyRoutes);
+app.use(`${apiPrefix}/lifecycle`, lifecycleRoutes);
 
 // 404 handler
 app.use((req, res) => {
