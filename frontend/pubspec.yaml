@@ -1,0 +1,55 @@
+name: safearms_frontend
+description: SafeArms Firearm Management and Forensic Support System - Frontend
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+
+  # HTTP Client
+  http: ^1.1.2
+
+  # Local Storage
+  shared_preferences: ^2.2.2
+
+  # QR Code
+  qr_flutter: ^4.1.0
+
+  # Charts
+  fl_chart: ^0.65.0
+
+  # Icons
+  cupertino_icons: ^1.0.6
+
+  # Date/Time
+  intl: ^0.18.1
+
+  # PDF Generation
+  pdf: ^3.10.7
+
+  # File Picker
+  file_picker: ^6.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+
+  # Add custom fonts if needed
+  # fonts:
+  #   - family: RobotoMono
+  #     fonts:
+  #       - asset: fonts/RobotoMono-Regular.ttf
