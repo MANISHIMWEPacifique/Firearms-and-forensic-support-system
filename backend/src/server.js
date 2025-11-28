@@ -15,6 +15,8 @@ const custodyRoutes = require('./routes/custody');
 const lifecycleRoutes = require('./routes/lifecycle');
 const anomalyRoutes = require('./routes/anomalies');
 const auditRoutes = require('./routes/audit');
+const forensicRoutes = require('./routes/forensic');
+const { scheduleAnomalyDetection, runAnomalyDetectionOnStartup } = require('./jobs/scheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -66,6 +68,7 @@ app.use(`${apiPrefix}/custody`, custodyRoutes);
 app.use(`${apiPrefix}/lifecycle`, lifecycleRoutes);
 app.use(`${apiPrefix}/anomalies`, anomalyRoutes);
 app.use(`${apiPrefix}/audit`, auditRoutes);
+app.use(`${apiPrefix}/forensic`, forensicRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -97,13 +100,19 @@ const startServer = async () => {
         console.log('✓ Database connection established');
 
         // Start server
-        app.listen(PORT, () => {
+        app.listen(PORT, async () => {
             console.log('========================================');
             console.log(`SafeArms Backend Server`);
             console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`Port: ${PORT}`);
             console.log(`API Base: ${apiPrefix}`);
             console.log('========================================');
+
+            // Initialize scheduled jobs
+            scheduleAnomalyDetection();
+
+            // Run anomaly detection on startup (development only)
+            await runAnomalyDetectionOnStartup();
         });
     } catch (error) {
         console.error('Failed to start server:', error);

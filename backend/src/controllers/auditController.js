@@ -188,7 +188,7 @@ const generateComplianceReport = async (req, res) => {
                     totalFirearms: parseInt(firearmsCount.rows[0].count),
                     activeCustodyAssignments: parseInt(activeCustody.rows[0].count),
                     pendingApprovals: parseInt(pendingEvents.rows[0].count),
-                    unreviewed Anomalies: parseInt(detectedAnomalies.rows[0].count)
+                    unreviewedAnomalies: parseInt(detectedAnomalies.rows[0].count)
                 },
                 firearmsByStatus: firearmsByStatus.rows,
                 criticalActions: criticalActions.rows,

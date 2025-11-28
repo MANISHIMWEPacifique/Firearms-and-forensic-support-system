@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 
-class AuthProvider with ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
-  
+
   User? _currentUser;
   bool _isAuthenticated = false;
   bool _isLoading = false;
@@ -30,21 +31,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     await _apiService.init();
-    
-    // Check if user data is stored
+
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('currentUser');
-    
+
     if (userJson != null) {
       try {
-        _currentUser = User.fromJson(
-          Map<String, dynamic>.from(
-            (await Future.value(userJson)) as Map,
-          ),
-        );
+        final Map<String, dynamic> userMap =
+            jsonDecode(userJson) as Map<String, dynamic>;
+        _currentUser = User.fromJson(userMap);
         _isAuthenticated = true;
       } catch (e) {
-        // Invalid user data, clear it
         await prefs.remove('currentUser');
       }
     }
@@ -60,14 +57,10 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post(
-        '/auth/login',
-        {
-          'username': username,
-          'password': password,
-        },
-        requiresAuth: false,
-      );
+      final result = await _apiService.post('/auth/login', {
+        'username': username,
+        'password': password,
+      }, requiresAuth: false);
 
       if (result['success'] == true) {
         if (result['requires2FASetup'] == true) {
@@ -79,7 +72,7 @@ class AuthProvider with ChangeNotifier {
           _tempToken = result['tempToken'];
           _pendingUserId = result['userId'];
         }
-        
+
         _isLoading = false;
         notifyListeners();
         return true;
@@ -110,11 +103,9 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post(
-        '/auth/setup-2fa',
-        {'userId': _pendingUserId},
-        requiresAuth: false,
-      );
+      final result = await _apiService.post('/auth/setup-2fa', {
+        'userId': _pendingUserId,
+      }, requiresAuth: false);
 
       if (result['success'] == true) {
         _isLoading = false;
@@ -151,33 +142,26 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post(
-        '/auth/verify-2fa',
-        {
-          'userId': _pendingUserId,
-          'token': code,
-        },
-        requiresAuth: false,
-      );
+      final result = await _apiService.post('/auth/verify-2fa', {
+        'userId': _pendingUserId,
+        'token': code,
+      }, requiresAuth: false);
 
       if (result['success'] == true && result['user'] != null) {
-        // Save tokens
         await _apiService.saveTokens(
           result['accessToken'],
           result['refreshToken'],
         );
 
-        // Save user
-        _currentUser = User.fromJson(result['user']);
+        _currentUser = User.fromJson(result['user'] as Map<String, dynamic>);
         _isAuthenticated = true;
         _requires2FA = false;
         _requires2FASetup = false;
         _tempToken = null;
         _pendingUserId = null;
 
-        // Persist user data
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('currentUser', result['user'].toString());
+        await prefs.setString('currentUser', jsonEncode(result['user']));
 
         _isLoading = false;
         notifyListeners();
@@ -203,10 +187,9 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post(
-        '/users/confirm-unit',
-        {'confirmed': true},
-      );
+      final result = await _apiService.post('/users/confirm-unit', {
+        'confirmed': true,
+      });
 
       if (result['success'] == true && _currentUser != null) {
         // Update user state
@@ -249,7 +232,7 @@ class AuthProvider with ChangeNotifier {
     }
 
     await _apiService.clearTokens();
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('currentUser');
 

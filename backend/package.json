@@ -30,7 +30,8 @@
     "express-validator": "^7.0.1",
     "winston": "^3.11.0",
     "ml-kmeans": "^6.0.0",
-    "ml-matrix": "^6.10.4"
+    "ml-matrix": "^6.10.4",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
