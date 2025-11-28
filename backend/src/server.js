@@ -13,6 +13,8 @@ const firearmRoutes = require('./routes/firearms');
 const officerRoutes = require('./routes/officers');
 const custodyRoutes = require('./routes/custody');
 const lifecycleRoutes = require('./routes/lifecycle');
+const anomalyRoutes = require('./routes/anomalies');
+const auditRoutes = require('./routes/audit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,6 +64,8 @@ app.use(`${apiPrefix}/firearms`, firearmRoutes);
 app.use(`${apiPrefix}/officers`, officerRoutes);
 app.use(`${apiPrefix}/custody`, custodyRoutes);
 app.use(`${apiPrefix}/lifecycle`, lifecycleRoutes);
+app.use(`${apiPrefix}/anomalies`, anomalyRoutes);
+app.use(`${apiPrefix}/audit`, auditRoutes);
 
 // 404 handler
 app.use((req, res) => {
