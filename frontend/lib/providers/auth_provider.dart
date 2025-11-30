@@ -15,7 +15,6 @@ class AuthProvider extends ChangeNotifier {
   // Login flow state
   bool _requires2FASetup = false;
   bool _requires2FA = false;
-  String? _tempToken;
   int? _pendingUserId;
 
   User? get currentUser => _currentUser;
@@ -57,19 +56,20 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post('/auth/login', {
-        'username': username,
-        'password': password,
-      }, requiresAuth: false);
+      final result = await _apiService.post(
+          '/auth/login',
+          {
+            'username': username,
+            'password': password,
+          },
+          requiresAuth: false);
 
       if (result['success'] == true) {
         if (result['requires2FASetup'] == true) {
           _requires2FASetup = true;
-          _tempToken = result['tempToken'];
           _pendingUserId = result['userId'];
         } else if (result['requires2FA'] == true) {
           _requires2FA = true;
-          _tempToken = result['tempToken'];
           _pendingUserId = result['userId'];
         }
 
@@ -103,9 +103,12 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post('/auth/setup-2fa', {
-        'userId': _pendingUserId,
-      }, requiresAuth: false);
+      final result = await _apiService.post(
+          '/auth/setup-2fa',
+          {
+            'userId': _pendingUserId,
+          },
+          requiresAuth: false);
 
       if (result['success'] == true) {
         _isLoading = false;
@@ -142,10 +145,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _apiService.post('/auth/verify-2fa', {
-        'userId': _pendingUserId,
-        'token': code,
-      }, requiresAuth: false);
+      final result = await _apiService.post(
+          '/auth/verify-2fa',
+          {
+            'userId': _pendingUserId,
+            'token': code,
+          },
+          requiresAuth: false);
 
       if (result['success'] == true && result['user'] != null) {
         await _apiService.saveTokens(
@@ -157,7 +163,6 @@ class AuthProvider extends ChangeNotifier {
         _isAuthenticated = true;
         _requires2FA = false;
         _requires2FASetup = false;
-        _tempToken = null;
         _pendingUserId = null;
 
         final prefs = await SharedPreferences.getInstance();
@@ -240,7 +245,6 @@ class AuthProvider extends ChangeNotifier {
     _isAuthenticated = false;
     _requires2FA = false;
     _requires2FASetup = false;
-    _tempToken = null;
     _pendingUserId = null;
     _error = null;
 

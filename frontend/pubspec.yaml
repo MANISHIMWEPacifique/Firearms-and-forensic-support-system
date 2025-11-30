@@ -19,7 +19,7 @@ dependencies:
   http: ^1.1.2
 
   # Local Storage
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.5.3
 
   # QR Code
   qr_flutter: ^4.1.0

@@ -13,10 +13,10 @@ import 'models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final authProvider = AuthProvider();
   await authProvider.init();
-  
+
   runApp(
     MultiProvider(
       providers: [
@@ -45,7 +45,7 @@ class SafeArmsApp extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -86,7 +86,7 @@ class AuthWrapper extends StatelessWidget {
           if (authProvider.requires2FASetup || authProvider.requires2FA) {
             return const TwoFAScreen();
           }
-          
+
           // Default to login screen
           return const LoginScreen();
         }
