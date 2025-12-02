@@ -132,7 +132,7 @@ enum RegistrationLevel {
       case RegistrationLevel.hq:
         return 'HQ';
       case RegistrationLevel.station:
-        return 'STATIO';
+        return 'STATION';
     }
   }
 }
