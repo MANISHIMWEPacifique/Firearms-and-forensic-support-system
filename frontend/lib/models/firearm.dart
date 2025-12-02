@@ -45,8 +45,7 @@ class Firearm {
       caliber: json['caliber'],
       status: FirearmStatus.fromString(json['status']),
       registrationLevel: RegistrationLevel.fromString(
-        json['registrationLevel'] ?? json['registration_level']
-      ),
+          json['registrationLevel'] ?? json['registration_level']),
       assignedUnitId: json['assignedUnitId'] ?? json['assigned_unit_id'],
       unitName: json['unitName'] ?? json['unit_name'],
       registeredBy: json['registeredBy'] ?? json['registered_by'],
@@ -133,7 +132,7 @@ enum RegistrationLevel {
       case RegistrationLevel.hq:
         return 'HQ';
       case RegistrationLevel.station:
-        return 'STATION';
+        return 'STATIO';
     }
   }
 }

@@ -91,7 +91,6 @@ class AuthWrapper extends StatelessWidget {
           return const LoginScreen();
         }
 
-        // User is authenticated
         final user = authProvider.currentUser!;
 
         // Station Commander must confirm unit
