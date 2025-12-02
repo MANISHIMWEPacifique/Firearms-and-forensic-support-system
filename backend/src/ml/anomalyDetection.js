@@ -171,7 +171,7 @@ async function detectProlongedAbsences() {
     const anomalies = [];
 
     // Get active temporary custody assignments past their expected return date
-    const overdueAssignments = await db.query(`
+    const overdueAssignments =  db.query(`
     SELECT ca.*, 
            f.serial_number,
            o.badge_number,
