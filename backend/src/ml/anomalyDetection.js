@@ -294,10 +294,7 @@ function detectStatisticalOutliers(logs) {
                         officerId: parseInt(officerId),
                         type: 'UNUSUAL_PATTERN',
                         score: score,
-                        explanation: `Officer ${features.badge_number} shows unusual custody pattern: ${features.totalActions} actions, ${features.firearmIds.size} firearms`,
-                        contextData: {
-                            totalActions: features.totalActions,
-                            assignments: features.assignments,
+                        : features.assignments,
                             returns: features.returns,
                             transfers: features.transfers,
                             uniqueFirearms: features.firearmIds.size
