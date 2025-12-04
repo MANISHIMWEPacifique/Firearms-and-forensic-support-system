@@ -94,7 +94,11 @@ app.use((err, req, res, next) => {
 // =====================================================
 
 const startServer = async () => {
-    try 
+    try {
+        // Test database connection
+        await db.query('SELECT NOW()');
+        console.log('✓ Database connection established');
+
         // Start server
         app.listen(PORT, async () => {
             console.log('========================================');
