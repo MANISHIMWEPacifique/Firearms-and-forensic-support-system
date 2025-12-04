@@ -291,8 +291,4 @@ const getInvestigationSummary = async (req, res) => {
     }
 };
 
-module.exports = {
-    forensicSearch,
-    getCrossUnitTimeline,
-    getInvestigationSummary
-};
+
