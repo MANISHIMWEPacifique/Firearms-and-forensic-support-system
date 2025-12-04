@@ -145,7 +145,11 @@ const getCrossUnitTimeline = async (req, res) => {
             paramCount++;
         }
 
-       
+        if (officerId) {
+            query += ` AND cl.officer_id = $${paramCount}`;
+            params.push(officerId);
+            paramCount++;
+        }
 
         if (startDate) {
             query += ` AND cl.timestamp >= $${paramCount}`;
