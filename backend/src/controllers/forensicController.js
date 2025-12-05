@@ -282,7 +282,9 @@ const getInvestigationSummary = async (req, res) => {
             }
         });
 
-    } catc{
+    } catch (error) {
+        console.error('Get investigation summary error:', error);
+        res.status(500).json({
             success: false,
             message: 'Failed to retrieve investigation summary'
         });
