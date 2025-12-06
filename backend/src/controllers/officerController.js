@@ -15,8 +15,7 @@ const getAllOfficers = async (req, res) => {
       LEFT JOIN units u ON o.unit_id = u.id
       WHERE 1=1
     `;
-        const params = [];
-        let paramCount = 1;
+        
 
         // Station Commanders only see their unit's officers
         if (userRole === 'STATION_COMMANDER') {
