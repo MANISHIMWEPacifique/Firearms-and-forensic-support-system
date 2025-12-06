@@ -17,12 +17,7 @@ const getAllUsers = async (req, res) => {
         const params = [];
         let paramCount = 1;
 
-        if (role) {
-            query += ` AND u.role = $${paramCount}`;
-            params.push(role);
-            paramCount++;
-        }
-
+        
         if (unitId) {
             query += ` AND u.unit_id = $${paramCount}`;
             params.push(unitId);
