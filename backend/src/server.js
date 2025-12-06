@@ -120,7 +120,14 @@ const startServer = async () => {
     }
 };
 
-
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully...');
+    db.pool.end(() => {
+        console.log('Database connections closed');
+        process.exit(0);
+    });
+});
 
 process.on('SIGINT', () => {
     console.log('\nSIGINT received, shutting down gracefully...');
