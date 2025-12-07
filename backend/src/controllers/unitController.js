@@ -97,12 +97,7 @@ const createUnit = async (req, res) => {
             [name]
         );
 
-        if (existingUnit.rows.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Unit name already exists'
-            });
-        }
+        
 
         const result = await db.query(
             `INSERT INTO units (name, unit_type, location, commander_name, contact_phone)
