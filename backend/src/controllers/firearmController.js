@@ -198,12 +198,7 @@ const getAllFirearms = async (req, res) => {
         }
 
         // Filter by type
-        if (type) {
-            query += ` AND f.firearm_type = $${paramCount}`;
-            params.push(type);
-            paramCount++;
-        }
-
+       
         // Filter by unit (for HQ users)
         if (unitId && userRole !== 'STATION_COMMANDER') {
             query += ` AND f.assigned_unit_id = $${paramCount}`;
