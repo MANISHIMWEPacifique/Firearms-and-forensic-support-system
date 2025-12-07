@@ -129,7 +129,13 @@ process.on('SIGTERM', () => {
     });
 });
 
-
+process.on('SIGINT', () => {
+    console.log('\nSIGINT received, shutting down gracefully...');
+    db.pool.end(() => {
+        console.log('Database connections closed');
+        process.exit(0);
+    });
+});
 
 startServer();
 
