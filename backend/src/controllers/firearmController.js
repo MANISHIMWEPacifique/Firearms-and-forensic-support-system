@@ -200,12 +200,7 @@ const getAllFirearms = async (req, res) => {
         // Filter by type
        
         // Filter by unit (for HQ users)
-        if (unitId && userRole !== 'STATION_COMMANDER') {
-            query += ` AND f.assigned_unit_id = $${paramCount}`;
-            params.push(unitId);
-            paramCount++;
-        }
-
+        
         // Search by serial number, manufacturer, or model
         if (search) {
             query += ` AND (
