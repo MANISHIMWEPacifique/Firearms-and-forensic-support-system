@@ -8,13 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ENUMS
 -- =====================================================
 
-CREATE TYPE user_role AS ENUM (
-  'ADMIN',
-  'HQ_FIREARM_COMMANDER',
-  'STATION_COMMANDER',
-  'FORENSIC_ANALYST',
-  'AUDITOR'
-);
+
 
 CREATE TYPE unit_type AS ENUM (
   'HEADQUARTERS',
