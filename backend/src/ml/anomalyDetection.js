@@ -359,6 +359,4 @@ async function storeAnomaly(anomaly) {
     }
 }
 
-module.exports = {
-    detectAnomalies
-};
+
