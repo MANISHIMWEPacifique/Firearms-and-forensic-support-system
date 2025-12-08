@@ -21,7 +21,14 @@ const reportLoss = async (req, res) => {
         const firearm = firearmCheck.rows[0];
 
         // Station Commanders can only report loss for their unit's firearms
-       
+        if (req.user.role === 'STATION_COMMANDER') {
+            if (firearm.assigned_unit_id !== req.user.unit_id) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'You can only report loss for your unit\'s firearms'
+                });
+            }
+        }
 
         // Create lifecycle event
         const result = await db.query(
