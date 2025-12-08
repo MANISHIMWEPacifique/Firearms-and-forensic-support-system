@@ -165,7 +165,12 @@ const verify2FA = async (req, res) => {
         }
 
         // Enable 2FA if this was first verification
-        
+        if (!user.totp_enabled) {
+            await db.query(
+                'UPDATE users SET totp_enabled = TRUE WHERE id = $1',
+                [user.id]
+            );
+        }
 
         // Update last login
         await db.query(
