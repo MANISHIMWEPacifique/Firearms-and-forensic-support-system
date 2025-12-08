@@ -195,31 +195,7 @@ const verify2FA = async (req, res) => {
             { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
         );
 
-        res.json({
-            success: true,
-            message: 'Login successful',
-            user: {
-                id: user.id,
-                username: user.username,
-                fullName: user.full_name,
-                role: user.role,
-                unitId: user.unit_id,
-                unitConfirmed: user.unit_confirmed
-            },
-            accessToken,
-            refreshToken
-        });
-
-    } catch (error) {
-        console.error('2FA verification error:', error);
-        res.status(500).json({
-            success: false,
-            message: '2FA verification failed'
-        });
-    }
-};
-
-// Refresh access token
+        token
 const refreshToken = async (req, res) => {
     try {
         const { refreshToken } = req.body;
