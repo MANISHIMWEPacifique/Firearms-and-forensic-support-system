@@ -23,29 +23,7 @@ const getAllAuditLogs = async (req, res) => {
             paramCount++;
         }
 
-        if (action) {
-            query += ` AND al.action ILIKE $${paramCount}`;
-            params.push(`%${action}%`);
-            paramCount++;
-        }
-
-        if (resourceType) {
-            query += ` AND al.resource_type = $${paramCount}`;
-            params.push(resourceType);
-            paramCount++;
-        }
-
-        if (startDate) {
-            query += ` AND al.timestamp >= $${paramCount}`;
-            params.push(startDate);
-            paramCount++;
-        }
-
-        if (endDate) {
-            query += ` AND al.timestamp <= $${paramCount}`;
-            params.push(endDate);
-            paramCount++;
-        }
+       
 
         query += ' ORDER BY al.timestamp DESC LIMIT 1000';
 
