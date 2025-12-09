@@ -7,13 +7,7 @@ const authenticateToken = async (req, res, next) => {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: 'Access token required'
-            });
-        }
-
+       
         jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
             if (err) {
                 return res.status(403).json({
