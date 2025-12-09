@@ -231,7 +231,14 @@ const refreshToken = async (req, res) => {
             });
         }
 
-        
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
+            if (err) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Invalid refresh token'
+                });
+            }
+
             // Get user
             const result = await db.query(
                 'SELECT id, username, role FROM users WHERE id = $1 AND is_active = TRUE',
