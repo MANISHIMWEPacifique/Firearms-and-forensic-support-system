@@ -48,11 +48,7 @@ const getClient = async () => {
   }, 5000);
   
   // Override release to clear timeout
-  client.release = () => {
-    clearTimeout(timeout);
-    client.release = release;
-    return release();
-  };
+  
   
   return client;
 };
