@@ -111,6 +111,12 @@ class AuthWrapper extends StatelessWidget {
         return const AdminDashboard();
       case UserRole.hqFirearmCommander:
         return const HQCommanderDashboard();
+      case UserRole.stationCommander:
+        return const StationCommanderDashboard();
+      case UserRole.forensicAnalyst:
+        return const ForensicAnalystDashboard();
+      case UserRole.auditor:
+        return const AuditorDashboard();
     }
   }
 }
