@@ -37,7 +37,48 @@ class AuditorDashboard extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             Expanded(
-              child: 
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildDashboardCard(
+                    context,
+                    'Audit Logs',
+                    Icons.history,
+                    Colors.blue,
+                    () {},
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    'Compliance Reports',
+                    Icons.assignment,
+                    Colors.green,
+                    () {},
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    'Anomalies',
+                    Icons.warning_amber,
+                    Colors.orange,
+                    () {},
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    'System Analytics',
+                    Icons.analytics,
+                    Colors.purple,
+                    () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDashboardCard(
     BuildContext context,
     String title,
