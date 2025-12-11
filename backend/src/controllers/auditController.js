@@ -1,7 +1,74 @@
 const db = require('../config/database');
 
 // Get all audit logs with filtering
+const getAllAuditLogs = async (req, res) => {
+    try {
+        const { userId, action, resourceType, startDate, endDate } = req.query;
 
+        let query = `
+      SELECT al.*,
+             u.username,
+             u.full_name as user_name,
+             u.role
+      FROM audit_logs al
+      LEFT JOIN users u ON al.user_id = u.id
+      WHERE 1=1
+    `;
+        const params = [];
+        let paramCount = 1;
+
+        if (userId) {
+            query += ` AND al.user_id = $${paramCount}`;
+            params.push(userId);
+            paramCount++;
+        }
+
+       
+
+        query += ' ORDER BY al.timestamp DESC LIMIT 1000';
+
+        const result = await db.query(query, params);
+
+        res.json({
+            success: true,
+            logs: result.rows
+        });
+
+    } catch (error) {
+        console.error('Get audit logs error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve audit logs'
+        });
+    }
+};
+
+// Get audit statistics
+const getAuditStatistics = async (req, res) => {
+    try {
+        // Actions by type
+        const actionStats = await db.query(`
+      SELECT action, COUNT(*) as count
+      FROM audit_logs
+      WHERE timestamp >= NOW() - INTERVAL '30 days'
+      GROUP BY action
+      ORDER BY count DESC
+      LIMIT 20
+    `);
+
+        // Activity by user
+        const userActivity = await db.query(`
+      SELECT u.username,
+             u.full_name,
+             u.role,
+             COUNT(*) as action_count
+      FROM audit_logs al
+      JOIN users u ON al.user_id = u.id
+      WHERE al.timestamp >= NOW() - INTERVAL '30 days'
+      GROUP BY u.id, u.username, u.full_name, u.role
+      ORDER BY action_count DESC
+      LIMIT 10
+    `);
 
         // Activity by resource type
         const resourceStats = await db.query(`
