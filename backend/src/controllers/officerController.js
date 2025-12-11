@@ -76,7 +76,26 @@ const getOfficerById = async (req, res) => {
             [id]
         );
 
-        
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Officer not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            officer: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error('Get officer error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve officer'
+        });
+    }
+};
 
 // Create new officer
 const createOfficer = async (req, res) => {
